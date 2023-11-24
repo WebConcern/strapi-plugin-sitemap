@@ -11,6 +11,7 @@ import {
   Checkbox,
   Combobox,
   ComboboxOption,
+  TextInput,
 } from '@strapi/design-system';
 
 import SelectContentTypes from '../../SelectContentTypes';
@@ -74,6 +75,16 @@ const CollectionForm = (props) => {
         <GridItem col={6} s={12}>
           <Grid gap={4}>
             <GridItem col={12}>
+              <TextInput
+                label={formatMessage({ id: 'sitemap.Settings.Field.Title.Label', defaultMessage: 'Title' })}
+                name="title"
+                required
+                value={modifiedState.getIn([uid, 'languages', langcode, 'title'], '')}
+                hint={formatMessage({ id: 'sitemap.Settings.Field.Title.Description', defaultMessage: 'Title of the bundle.' })}
+                onChange={(e) => onChange(uid, langcode, 'title', e.target.value)}
+              />
+            </GridItem>
+            <GridItem col={12}>
               <SelectContentTypes
                 contentTypes={contentTypes}
                 onChange={(value) => handleSelectChange(value)}
@@ -87,6 +98,36 @@ const CollectionForm = (props) => {
                 contentType={contentTypes[uid]}
                 onChange={(value) => handleSelectChange(uid, value)}
                 value={langcode}
+              />
+            </GridItem>
+            <GridItem col={12}>
+
+              <TextInput
+                label={formatMessage({ id: 'sitemap.Settings.Field.Filter.Label', defaultMessage: 'Additional filters' })}
+                name="filter"
+                value={modifiedState.getIn([uid, 'languages', langcode, 'filter'], '')}
+                hint={formatMessage({ id: 'sitemap.Settings.Field.Filter.Description', defaultMessage: 'Add additional filters to the content type.' })}
+                onChange={(e) => onChange(uid, langcode, 'filter', e.target.value)}
+              />
+            </GridItem>
+
+            <GridItem col={12}>
+              <TextInput
+                label={formatMessage({ id: 'sitemap.Settings.Field.MaxAge.Label', defaultMessage: 'Max age of items (ms)' })}
+                name="maxAge"
+                value={modifiedState.getIn([uid, 'languages', langcode, 'maxAge'], '')}
+                hint={formatMessage({ id: 'sitemap.Settings.Field.MaxAge.Description', defaultMessage: 'Define the maximum age of an item in milliseconds.' })}
+                onChange={(e) => onChange(uid, langcode, 'maxAge', e.target.value)}
+              />
+            </GridItem>
+
+            <GridItem col={12}>
+              <TextInput
+                label={formatMessage({ id: 'sitemap.Settings.Field.MinAge.Label', defaultMessage: 'Min age of items (ms)' })}
+                name="minAge"
+                value={modifiedState.getIn([uid, 'languages', langcode, 'minAge'], '')}
+                hint={formatMessage({ id: 'sitemap.Settings.Field.MinAge.Description', defaultMessage: 'Define the minimum age of an item in milliseconds.' })}
+                onChange={(e) => onChange(uid, langcode, 'minAge', e.target.value)}
               />
             </GridItem>
           </Grid>
@@ -165,6 +206,29 @@ const CollectionForm = (props) => {
               >
                 {formatMessage({ id: 'sitemap.Settings.Field.IncludeLastmod.Label', defaultMessage: 'Lastmod' })}
               </Checkbox>
+            </GridItem>
+
+            <GridItem col={12}>
+              <Checkbox
+                onValueChange={(cbValue) => {
+                  onChange(uid, langcode, 'addNews', cbValue);
+                }}
+                value={modifiedState.getIn([uid, 'languages', langcode, 'addNews'], false)}
+                disabled={!uid || (contentTypes[uid].locales && !langcode)}
+                hint={formatMessage({ id: 'sitemap.Settings.Field.AddNews.Description', defaultMessage: 'Adds a News object to all the URLs of this type.' })}
+              >
+                {formatMessage({ id: 'sitemap.Settings.Field.AddNews.Label', defaultMessage: 'Add News' })}
+              </Checkbox>
+            </GridItem>
+
+            <GridItem col={12}>
+              <TextInput
+                label={formatMessage({ id: 'sitemap.Settings.Field.NewsTitleField.Label', defaultMessage: 'Title field for News' })}
+                name="newsTitleField"
+                value={modifiedState.getIn([uid, 'languages', langcode, 'newsTitleField'], '')}
+                hint={formatMessage({ id: 'sitemap.Settings.Field.NewsTitleField.Description', defaultMessage: 'Field to use to set the field title in news.publication.' })}
+                onChange={(e) => onChange(uid, langcode, 'newsTitleField', e.target.value)}
+              />
             </GridItem>
           </Grid>
         </GridItem>

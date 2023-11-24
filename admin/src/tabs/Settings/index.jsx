@@ -42,6 +42,16 @@ const Settings = () => {
           onChange={(e) => dispatch(onChangeSettings('hostname', e.target.value))}
         />
       </GridItem>
+      <GridItem col={6} s={12}>
+        <TextInput
+          placeholder="My Website"
+          label={formatMessage({ id: 'sitemap.Settings.Field.WebsiteName.Label', defaultMessage: 'Website name' })}
+          name="websiteName"
+          value={settings.get('websiteName')}
+          hint={formatMessage({ id: 'sitemap.Settings.Field.WebsiteName.Description', defaultMessage: 'The name of your website' })}
+          onChange={(e) => dispatch(onChangeSettings('websiteName', e.target.value))}
+        />
+      </GridItem>
       {languages.length > 1 && (
         <GridItem col={12} s={12}>
           <Typography variant="pi" fontWeight="bold">

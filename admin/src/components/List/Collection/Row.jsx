@@ -20,6 +20,9 @@ const CustomRow = ({ openModal, entry }) => {
   return (
     <Tr key={entry.id}>
       <Td>
+        <Typography variant="omega" textColor="neutral800">{entry.title}</Typography>
+      </Td>
+      <Td>
         <Typography variant="omega" textColor="neutral800">{contentTypes[entry.name] && contentTypes[entry.name].displayName}</Typography>
       </Td>
       <Td>

@@ -33,12 +33,16 @@ const getFieldsFromConfig = (contentType, topLevel = false, isLocalized = false,
     });
   }
 
+
+
   if (topLevel) {
     if (isLocalized) {
       fields.push('locale');
     }
 
     fields.push('updatedAt');
+    fields.push('createdAt');
+    fields.push('publishedAt');
   }
 
   // Remove duplicates
@@ -87,8 +91,36 @@ const getPages = async (config, contentType, ids) => {
 
   const relations = getRelationsFromConfig(config.contentTypes[contentType]);
   const fields = getFieldsFromConfig(config.contentTypes[contentType], true, isLocalized);
+  let filters = {}
 
-  const pages = await noLimit(strapi, contentType, {
+  for (const language in config.contentTypes[contentType].languages) {
+    const newsTitleField = config.contentTypes[contentType].languages[language].newsTitleField;
+    if (newsTitleField) fields.push(newsTitleField);
+
+    if (config.contentTypes[contentType].languages[language]['filter']) {
+      const filter = config.contentTypes[contentType].languages[language]['filter'];
+      filters = { ...filters, ...filter.value }
+    }
+
+    if (config.contentTypes[contentType].languages[language]['maxAge']) {
+      const maxAge = config.contentTypes[contentType].languages[language]['maxAge'];
+      const date = new Date(new Date().getTime() - (maxAge));
+      filters = { ...filters, publishedAt: { $gte: date } }
+    }
+
+    if (config.contentTypes[contentType].languages[language]['minAge']) {
+      const minAge = config.contentTypes[contentType].languages[language]['minAge'];
+      const date = new Date(new Date().getTime() - (minAge));
+      if(filters.publishedAt) {
+        filters.publishedAt = { ...filters.publishedAt, $lte: date }
+      } else {
+        filters = { ...filters, publishedAt: { $lte: date } }
+      }
+    }
+  }
+
+
+  const params = {
     filters: {
       $or: [
         {
@@ -105,6 +137,7 @@ const getPages = async (config, contentType, ids) => {
       id: ids ? {
         $in: ids,
       } : {},
+      ...filters,
     },
     locale: 'all',
     fields,
@@ -117,7 +150,9 @@ const getPages = async (config, contentType, ids) => {
     },
     orderBy: 'id',
     publicationState: excludeDrafts ? 'live' : 'preview',
-  });
+  };
+
+  const pages = await noLimit(strapi, contentType, params);
 
   return pages;
 };

@@ -29,6 +29,7 @@ const ListComponent = (props) => {
   items.map((item, key) => {
     item.get('languages').map((langItem, langKey) => {
       const formattedItem = {};
+      formattedItem.title = langItem.get('title');
       formattedItem.name = key;
       formattedItem.langcode = langKey;
       formattedItem.pattern = langItem.get('pattern');
@@ -51,6 +52,9 @@ const ListComponent = (props) => {
     <Table colCount={4} rowCount={formattedItems.length + 1} footer={<TFooter onClick={() => openModal()} icon={<Plus />}>{formatMessage({ id: 'sitemap.Button.AddURLBundle', defaultMessage: 'Add another URL bundle' })}</TFooter>}>
       <Thead>
         <Tr>
+          <Th>
+            <Typography variant="sigma">Name</Typography>
+          </Th>
           <Th>
             <Typography variant="sigma">Type</Typography>
           </Th>

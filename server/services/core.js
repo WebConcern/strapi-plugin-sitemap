@@ -88,12 +88,28 @@ const getSitemapPageData = async (config, page, contentType) => {
   const url = `${hostnameOverride}${path}`;
 
   const pageData = {
-    lastmod: page.updatedAt,
-    url: url,
-    links: await getLanguageLinks(config, page, contentType, url),
-    changefreq: config.contentTypes[contentType]['languages'][locale].changefreq || 'monthly',
-    priority: parseFloat(config.contentTypes[contentType]['languages'][locale].priority) || 0.5,
+    url,
   };
+
+  if (config.contentTypes[contentType]['languages'][locale].addNews === true) {
+    const titleField = config.contentTypes[contentType]['languages'][locale].titleField || 'title';
+    pageData.news = {
+      publication: {
+        name: config.websiteName,
+        language: page.locale,
+      },
+      title: page[titleField],
+      publication_date: page.publishedAt || page.createdAt,
+    };
+  } else {
+    pageData = {
+      ...pageData,
+      lastmod: page.updatedAt,
+      links: await getLanguageLinks(config, page, contentType, url),
+      changefreq: config.contentTypes[contentType]['languages'][locale].changefreq || 'monthly',
+      priority: parseFloat(config.contentTypes[contentType]['languages'][locale].priority) || 0.5,
+    }
+  }
 
   if (config.contentTypes[contentType]['languages'][locale].includeLastmod === false) {
     delete pageData.lastmod;

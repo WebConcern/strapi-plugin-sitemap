@@ -22,6 +22,7 @@ const createDefaultConfig = async () => {
     hostname_overrides: {},
     contentTypes: Map({}),
     customEntries: Map({}),
+    websiteName: '',
   };
 
   await pluginStore.set({ key: 'settings', value });
