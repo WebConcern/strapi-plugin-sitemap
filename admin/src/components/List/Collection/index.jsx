@@ -22,21 +22,25 @@ const ListComponent = (props) => {
   const formattedItems = [];
   const { formatMessage } = useIntl();
 
+  console.log({ items: items.toJSON() })
+
   if (!items) {
     return null;
   }
 
   items.map((item, key) => {
-    item.get('languages').map((langItem, langKey) => {
+    // formattedItems.push(formattedItem)
+
+    
       const formattedItem = {};
-      formattedItem.title = langItem.get('title');
-      formattedItem.name = key;
+      formattedItem.name = langItem.get('name');
+      
       formattedItem.langcode = langKey;
       formattedItem.pattern = langItem.get('pattern');
       formattedItem.onDelete = onDelete;
 
       formattedItems.push(formattedItem);
-    });
+    
   });
 
   if (items.size === 0) {

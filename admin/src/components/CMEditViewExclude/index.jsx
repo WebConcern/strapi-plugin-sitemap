@@ -20,8 +20,8 @@ const CMEditViewExclude = () => {
     getSitemapSettings();
   }, []);
 
-  if (!sitemapSettings.contentTypes) return null;
-  if (!sitemapSettings.contentTypes[slug]) return null;
+  if (!sitemapSettings.bundleItems) return null;
+  if (!sitemapSettings.bundleItems[slug]) return null;
 
   return (
     <Box paddingTop={6}>

@@ -5,8 +5,6 @@ import { Box, Flex, Tr, Td, Typography, IconButton } from '@strapi/design-system
 import { useSelector } from 'react-redux';
 
 const CustomRow = ({ openModal, entry }) => {
-  const contentTypes = useSelector((store) => store.getIn(['sitemap', 'contentTypes'], {}));
-
   const handleEditClick = (e) => {
     openModal(entry.name, entry.langcode);
     e.stopPropagation();
@@ -20,10 +18,7 @@ const CustomRow = ({ openModal, entry }) => {
   return (
     <Tr key={entry.id}>
       <Td>
-        <Typography variant="omega" textColor="neutral800">{entry.title}</Typography>
-      </Td>
-      <Td>
-        <Typography variant="omega" textColor="neutral800">{contentTypes[entry.name] && contentTypes[entry.name].displayName}</Typography>
+        <Typography variant="omega" textColor="neutral800">{entry.name}</Typography>
       </Td>
       <Td>
         <Typography variant="omega" textColor="neutral800">{entry.langcode === 'und' ? 'N/A' : entry.langcode}</Typography>

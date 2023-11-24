@@ -21,8 +21,8 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/content-types',
-      handler: 'core.getContentTypes',
+      path: '/bundle-items',
+      handler: 'core.getBundleItems',
       config: {
         policies: [],
       },

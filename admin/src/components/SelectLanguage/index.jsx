@@ -6,13 +6,11 @@ const SelectLanguage = (props) => {
   const { formatMessage } = useIntl();
 
   const {
-    contentType,
+    locales,
     onChange,
     value,
   } = props;
 
-  if (!contentType) return null;
-  if (!contentType.locales) return null;
 
   return (
     <div>
@@ -24,7 +22,7 @@ const SelectLanguage = (props) => {
         value={value}
         disabled={value === 'und'}
       >
-        {Object.entries(contentType.locales).map(([uid, displayName]) => {
+        {Object.entries(locales).map(([uid, displayName]) => {
           return <Option value={uid} key={uid}>{displayName}</Option>;
         })}
       </Select>

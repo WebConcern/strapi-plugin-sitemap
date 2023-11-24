@@ -30,10 +30,10 @@ const initialState = fromJS({
   info: {},
   allowedFields: {},
   settings: Map({}),
-  contentTypes: {},
+  bundleItems: {},
   languages: [],
   initialData: Map({}),
-  modifiedContentTypes: Map({}),
+  modifiedBundleItems: Map({}),
   modifiedCustomEntries: Map({}),
 });
 
@@ -43,24 +43,24 @@ export default function sitemapReducer(state = initialState, action) {
     case GET_SETTINGS_SUCCEEDED:
       return state
         .update('settings', () => fromJS(action.settings))
-        .updateIn(['settings', 'contentTypes'], () => fromJS(action.settings.get('contentTypes')))
+        .updateIn(['settings', 'bundleItems'], () => fromJS(action.settings.get('bundleItems')))
         .updateIn(['settings', 'customEntries'], () => fromJS(action.settings.get('customEntries')))
         .update('initialData', () => fromJS(action.settings))
-        .updateIn(['initialData', 'contentTypes'], () => fromJS(action.settings.get('contentTypes')))
+        .updateIn(['initialData', 'bundleItems'], () => fromJS(action.settings.get('bundleItems')))
         .updateIn(['initialData', 'customEntries'], () => fromJS(action.settings.get('customEntries')))
-        .update('modifiedContentTypes', () => fromJS(action.settings.get('contentTypes')))
+        .update('modifiedBundleItems', () => fromJS(action.settings.get('bundleItems')))
         .update('modifiedCustomEntries', () => fromJS(action.settings.get('customEntries')));
     case UPDATE_SETTINGS:
       return state
-        .update('modifiedContentTypes', () => fromJS(action.settings.get('contentTypes')))
-        .updateIn(['settings', 'contentTypes'], () => fromJS(action.settings.get('contentTypes')));
+        .update('modifiedBundleItems', () => fromJS(action.settings.get('bundleItems')))
+        .updateIn(['settings', 'bundleItems'], () => fromJS(action.settings.get('bundleItems')));
     case ON_CHANGE_CONTENT_TYPES:
       if (action.lang) {
         return state
-          .updateIn(['modifiedContentTypes', action.contentType, 'languages', action.lang, action.key], () => action.value);
+          .updateIn(['modifiedBundleItems', action.contentType, 'languages', action.lang, action.key], () => action.value);
       } else {
         return state
-          .updateIn(['modifiedContentTypes', action.contentType, action.key], () => action.value);
+          .updateIn(['modifiedBundleItems', action.contentType, action.key], () => action.value);
       }
     case ON_CHANGE_CUSTOM_ENTRY:
       return state
@@ -71,25 +71,25 @@ export default function sitemapReducer(state = initialState, action) {
     case DISCARD_ALL_CHANGES:
       return state
         .update('settings', () => state.get('initialData'))
-        .update('modifiedContentTypes', () => state.getIn(['initialData', 'contentTypes']))
+        .update('modifiedBundleItems', () => state.getIn(['initialData', 'bundleItems']))
         .update('modifiedCustomEntries', () => state.getIn(['initialData', 'customEntries']));
     case DISCARD_MODIFIED_CONTENT_TYPES:
       return state
-        .update('modifiedContentTypes', () => state.getIn(['settings', 'contentTypes']))
+        .update('modifiedBundleItems', () => state.getIn(['settings', 'bundleItems']))
         .update('modifiedCustomEntries', () => state.getIn(['settings', 'customEntries']));
     case SUBMIT_MODAL:
       return state
-        .updateIn(['settings', 'contentTypes'], () => state.get('modifiedContentTypes'))
+        .updateIn(['settings', 'bundleItems'], () => state.get('modifiedBundleItems'))
         .updateIn(['settings', 'customEntries'], () => state.get('modifiedCustomEntries'));
     case DELETE_CONTENT_TYPE:
-      if (state.getIn(['settings', 'contentTypes', action.key, 'languages']).size > 1) {
+      if (state.getIn(['settings', 'bundleItems', action.key, 'languages']).size > 1) {
         return state
-          .deleteIn(['settings', 'contentTypes', action.key, 'languages', action.lang])
-          .deleteIn(['modifiedContentTypes', action.key, 'languages', action.lang]);
+          .deleteIn(['settings', 'bundleItems', action.key, 'languages', action.lang])
+          .deleteIn(['modifiedBundleItems', action.key, 'languages', action.lang]);
       } else {
         return state
-          .deleteIn(['settings', 'contentTypes', action.key])
-          .deleteIn(['modifiedContentTypes', action.key]);
+          .deleteIn(['settings', 'bundleItems', action.key])
+          .deleteIn(['modifiedBundleItems', action.key]);
       }
     case DELETE_CUSTOM_ENTRY:
       return state
@@ -97,7 +97,7 @@ export default function sitemapReducer(state = initialState, action) {
         .deleteIn(['modifiedCustomEntries', action.key]);
     case GET_CONTENT_TYPES_SUCCEEDED:
       return state
-        .update('contentTypes', () => action.contentTypes);
+        .update('bundleItems', () => action.bundleItems);
     case GET_LANGUAGES_SUCCEEDED:
       return state
         .update('languages', () => action.languages);

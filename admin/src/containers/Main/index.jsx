@@ -14,7 +14,7 @@ import Tabs from '../../components/Tabs';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
 
-import { getAllowedFields, getContentTypes, getSettings, getSitemapInfo, getLanguages } from '../../state/actions/Sitemap';
+import { getAllowedFields, getBundleItems, getSettings, getSitemapInfo, getLanguages } from '../../state/actions/Sitemap';
 import Loader from '../../components/Loader';
 
 const App = () => {
@@ -26,7 +26,7 @@ const App = () => {
   useEffect(() => {
     dispatch(getSettings(toggleNotification));
     dispatch(getLanguages(toggleNotification));
-    dispatch(getContentTypes(toggleNotification));
+    dispatch(getBundleItems(toggleNotification));
     dispatch(getSitemapInfo(toggleNotification));
     dispatch(getAllowedFields(toggleNotification));
   }, [dispatch]);

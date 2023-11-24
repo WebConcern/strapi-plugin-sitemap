@@ -10,16 +10,16 @@ import { Map } from 'immutable';
 
 import {
   SUBMIT_MODAL,
-  ON_CHANGE_CONTENT_TYPES,
+  ON_CHANGE_BUNDLE_ITEMS,
   ON_CHANGE_SETTINGS,
   GET_SETTINGS_SUCCEEDED,
-  GET_CONTENT_TYPES_SUCCEEDED,
+  GET_BUNDLE_ITEMS_SUCCEEDED,
   GET_LANGUAGES_SUCCEEDED,
   ON_SUBMIT_SUCCEEDED,
   DELETE_CONTENT_TYPE,
   DELETE_CUSTOM_ENTRY,
   DISCARD_ALL_CHANGES,
-  DISCARD_MODIFIED_CONTENT_TYPES,
+  DISCARD_MODIFIED_BUNDLE_ITEMS,
   UPDATE_SETTINGS,
   GET_SITEMAP_INFO_SUCCEEDED,
   ON_CHANGE_CUSTOM_ENTRY,
@@ -48,11 +48,10 @@ export function getSettingsSucceeded(settings) {
   };
 }
 
-export function onChangeContentTypes(contentType, lang, key, value) {
+export function onChangeBundleItems(index, key, value) {
   return {
-    type: ON_CHANGE_CONTENT_TYPES,
-    contentType,
-    lang,
+    type: ON_CHANGE_BUNDLE_ITEMS,
+    index,
     key,
     value,
   };
@@ -88,9 +87,9 @@ export function updateSettings(settings) {
   };
 }
 
-export function discardModifiedContentTypes() {
+export function discardModifiedBundleItems() {
   return {
-    type: DISCARD_MODIFIED_CONTENT_TYPES,
+    type: DISCARD_MODIFIED_BUNDLE_ITEMS,
   };
 }
 
@@ -108,21 +107,21 @@ export function generateSitemap(toggleNotification) {
   };
 }
 
-export function getContentTypes(toggleNotification) {
+export function getBundleItems(toggleNotification) {
   return async function(dispatch) {
     try {
-      const contentTypes = await request('/sitemap/content-types/', { method: 'GET' });
-      dispatch(getContentTypesSucceeded(contentTypes));
+      const bundleItems = await request('/sitemap/bundle-items/', { method: 'GET' });
+      dispatch(getBundleItemsSucceeded(bundleItems));
     } catch (err) {
       toggleNotification({ type: 'warning', message: { id: 'notification.error' } });
     }
   };
 }
 
-export function getContentTypesSucceeded(contentTypes) {
+export function getBundleItemsSucceeded(bundleItems) {
   return {
-    type: GET_CONTENT_TYPES_SUCCEEDED,
-    contentTypes,
+    type: GET_BUNDLE_ITEMS_SUCCEEDED,
+    bundleItems,
   };
 }
 
