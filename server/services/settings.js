@@ -20,7 +20,7 @@ const createDefaultConfig = async () => {
     includeHomepage: true,
     excludeDrafts: true,
     hostname_overrides: {},
-    contentTypes: Map({}),
+    bundleItems: Map({}),
     customEntries: Map({}),
     websiteName: '',
   };

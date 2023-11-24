@@ -80,36 +80,36 @@ const getRelationsFromConfig = (contentType) => {
  * Query the nessecary pages from Strapi to build the sitemap with.
  *
  * @param {obj} config - The config object
- * @param {string} contentType - Query only entities of this type.
+ * @param {string} index - Query only entities of this type.
  * @param {array} ids - Query only these ids.
  *
  * @returns {object} The pages.
  */
-const getPages = async (config, contentType, ids) => {
-  const excludeDrafts = config.excludeDrafts && strapi.contentTypes[contentType].options.draftAndPublish;
-  const isLocalized = strapi.contentTypes[contentType].pluginOptions?.i18n?.localized;
+const getPages = async (config, index, ids) => {
+  const excludeDrafts = config.excludeDrafts && strapi.bundleItems[index].options.draftAndPublish;
+  const isLocalized = strapi.bundleItems[index].pluginOptions?.i18n?.localized;
 
-  const relations = getRelationsFromConfig(config.contentTypes[contentType]);
-  const fields = getFieldsFromConfig(config.contentTypes[contentType], true, isLocalized);
+  const relations = getRelationsFromConfig(config.bundleItems[index]);
+  const fields = getFieldsFromConfig(config.bundleItems[index], true, isLocalized);
   let filters = {}
 
-  for (const language in config.contentTypes[contentType].languages) {
-    const newsTitleField = config.contentTypes[contentType].languages[language].newsTitleField;
+  for (const language in config.bundleItems[index].languages) {
+    const newsTitleField = config.bundleItems[index].newsTitleField;
     if (newsTitleField) fields.push(newsTitleField);
 
-    if (config.contentTypes[contentType].languages[language]['filter']) {
-      const filter = config.contentTypes[contentType].languages[language]['filter'];
+    if (config.bundleItems[index]['filter']) {
+      const filter = config.bundleItems[index]['filter'];
       filters = { ...filters, ...filter.value }
     }
 
-    if (config.contentTypes[contentType].languages[language]['maxAge']) {
-      const maxAge = config.contentTypes[contentType].languages[language]['maxAge'];
+    if (config.bundleItems[index]['maxAge']) {
+      const maxAge = config.bundleItems[index]['maxAge'];
       const date = new Date(new Date().getTime() - (maxAge));
       filters = { ...filters, publishedAt: { $gte: date } }
     }
 
-    if (config.contentTypes[contentType].languages[language]['minAge']) {
-      const minAge = config.contentTypes[contentType].languages[language]['minAge'];
+    if (config.bundleItems[index]['minAge']) {
+      const minAge = config.bundleItems[index]['minAge'];
       const date = new Date(new Date().getTime() - (minAge));
       if(filters.publishedAt) {
         filters.publishedAt = { ...filters.publishedAt, $lte: date }
@@ -152,7 +152,7 @@ const getPages = async (config, contentType, ids) => {
     publicationState: excludeDrafts ? 'live' : 'preview',
   };
 
-  const pages = await noLimit(strapi, contentType, params);
+  const pages = await noLimit(strapi, index, params);
 
   return pages;
 };
@@ -166,7 +166,7 @@ const getPages = async (config, contentType, ids) => {
  * @returns {object} The pages.
  */
 const getLocalizationIds = async (contentType, ids) => {
-  const isLocalized = strapi.contentTypes[contentType].pluginOptions?.i18n?.localized;
+  const isLocalized = strapi.bundleItems[index].contentType.pluginOptions?.i18n?.localized;
   const localizationIds = [];
 
   if (isLocalized) {
@@ -216,26 +216,26 @@ const composeInvalidationObject = async (config, type, queryFilters, ids = []) =
   };
 
   // Add all pages that have a relation to the updated entity.
-  await Promise.all(Object.keys(config.contentTypes).map(async (contentType) => {
-    const relations = Object.keys(getRelationsFromConfig(config.contentTypes[contentType]));
+  await Promise.all(Object.keys(config.bundleItems).map(async (bundleItem) => {
+    const relations = Object.keys(getRelationsFromConfig(config.bundleItems[index]));
 
     await Promise.all(relations.map(async (relation) => {
-      if (strapi.contentTypes[contentType].attributes[relation].target === type) {
+      if (strapi.bundleItems[index].attributes[relation].target === type) {
 
-        const pagesToUpdate = await strapi.entityService.findMany(contentType, {
+        const pagesToUpdate = await strapi.entityService.findMany(bundleItem.contentType, {
           filters: { [relation]: mainIds },
           fields: ['id'],
         });
 
-        if (pagesToUpdate.length > 0 && !invalidationObject[contentType]) {
-          invalidationObject[contentType] = {};
+        if (pagesToUpdate.length > 0 && !invalidationObject[bundleItem.contentType]) {
+          invalidationObject[bundleItem.contentType] = {};
         }
 
         const relatedIds = [];
         pagesToUpdate.map((page) => relatedIds.push(page.id));
-        const relatedLocaleIds = await getLocalizationIds(contentType, relatedIds);
+        const relatedLocaleIds = await getLocalizationIds(bundleItem, relatedIds);
 
-        invalidationObject[contentType] = {
+        invalidationObject[bundleItem] = {
           ids: [
             ...relatedLocaleIds,
             ...relatedIds,

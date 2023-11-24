@@ -31,18 +31,18 @@ const getLanguageLinks = async (config, page, contentType, defaultURL) => {
 
     // Return when there is no pattern for the page.
     if (
-      !config.contentTypes[contentType]['languages'][locale]
-      && config.contentTypes[contentType]['languages']['und']
+      !config.bundleItems[index]
+      && config.bundleItems[index]['languages']['und']
     ) {
       locale = 'und';
     } else if (
-      !config.contentTypes[contentType]['languages'][locale]
-      && !config.contentTypes[contentType]['languages']['und']
+      !config.bundleItems[index]
+      && !config.bundleItems[index]['languages']['und']
     ) {
       return null;
     }
 
-    const { pattern } = config.contentTypes[contentType]['languages'][locale];
+    const { pattern } = config.bundleItems[index];
     const translationUrl = await strapi.plugins.sitemap.services.pattern.resolvePattern(pattern, translation);
     let hostnameOverride = config.hostname_overrides[translation.locale] || '';
     hostnameOverride = hostnameOverride.replace(/\/+$/, '');
@@ -70,18 +70,18 @@ const getSitemapPageData = async (config, page, contentType) => {
 
   // Return when there is no pattern for the page.
   if (
-    !config.contentTypes[contentType]['languages'][locale]
-    && config.contentTypes[contentType]['languages']['und']
+    !config.bundleItems[index]
+    && config.bundleItems[index]['languages']['und']
   ) {
     locale = 'und';
   } else if (
-    !config.contentTypes[contentType]['languages'][locale]
-    && !config.contentTypes[contentType]['languages']['und']
+    !config.bundleItems[index]
+    && !config.bundleItems[index]['languages']['und']
   ) {
     return null;
   }
 
-  const { pattern } = config.contentTypes[contentType]['languages'][locale];
+  const { pattern } = config.bundleItems[index];
   const path = await strapi.plugins.sitemap.services.pattern.resolvePattern(pattern, page);
   let hostnameOverride = config.hostname_overrides[page.locale] || '';
   hostnameOverride = hostnameOverride.replace(/\/+$/, '');
@@ -91,8 +91,8 @@ const getSitemapPageData = async (config, page, contentType) => {
     url,
   };
 
-  if (config.contentTypes[contentType]['languages'][locale].addNews === true) {
-    const titleField = config.contentTypes[contentType]['languages'][locale].titleField || 'title';
+  if (config.bundleItems[index].addNews === true) {
+    const titleField = config.bundleItems[index].titleField || 'title';
     pageData.news = {
       publication: {
         name: config.websiteName,
@@ -106,12 +106,12 @@ const getSitemapPageData = async (config, page, contentType) => {
       ...pageData,
       lastmod: page.updatedAt,
       links: await getLanguageLinks(config, page, contentType, url),
-      changefreq: config.contentTypes[contentType]['languages'][locale].changefreq || 'monthly',
-      priority: parseFloat(config.contentTypes[contentType]['languages'][locale].priority) || 0.5,
+      changefreq: config.bundleItems[index].changefreq || 'monthly',
+      priority: parseFloat(config.bundleItems[index].priority) || 0.5,
     }
   }
 
-  if (config.contentTypes[contentType]['languages'][locale].includeLastmod === false) {
+  if (config.bundleItems[index].includeLastmod === false) {
     delete pageData.lastmod;
   }
 

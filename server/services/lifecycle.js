@@ -37,7 +37,7 @@ const generateSitemapAfterUpdate = async (modelName, queryFilters, object, ids) 
 const subscribeLifecycleMethods = async (modelName) => {
   const cachingEnabled = strapi.config.get('plugin.sitemap.caching');
 
-  if (strapi.contentTypes[modelName]) {
+  if (strapi.bundleItems[modelName]) {
     await strapi.db.lifecycles.subscribe({
       models: [modelName],
 
@@ -90,9 +90,9 @@ module.exports = () => ({
   async loadAllLifecycleMethods() {
     const settings = await getService('settings').getConfig();
 
-    // Loop over configured contentTypes from store.
-    if (settings.contentTypes && strapi.config.get('plugin.sitemap.autoGenerate')) {
-      Object.keys(settings.contentTypes).map(async (contentType) => {
+    // Loop over configured bundleItems from store.
+    if (settings.bundleItems && strapi.config.get('plugin.sitemap.autoGenerate')) {
+      Object.keys(settings.bundleItems).map(async (contentType) => {
         await subscribeLifecycleMethods(contentType);
       });
     }
