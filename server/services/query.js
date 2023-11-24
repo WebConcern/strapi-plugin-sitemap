@@ -86,8 +86,8 @@ const getRelationsFromConfig = (contentType) => {
  * @returns {object} The pages.
  */
 const getPages = async (config, index, ids) => {
-  const excludeDrafts = config.excludeDrafts && strapi.bundleItems[index].options.draftAndPublish;
-  const isLocalized = strapi.bundleItems[index].pluginOptions?.i18n?.localized;
+  const excludeDrafts = config.excludeDrafts && strapi.contentTypes[index].options.draftAndPublish;
+  const isLocalized = strapi.contentTypes[index].pluginOptions?.i18n?.localized;
 
   const relations = getRelationsFromConfig(config.bundleItems[index]);
   const fields = getFieldsFromConfig(config.bundleItems[index], true, isLocalized);
@@ -166,7 +166,7 @@ const getPages = async (config, index, ids) => {
  * @returns {object} The pages.
  */
 const getLocalizationIds = async (contentType, ids) => {
-  const isLocalized = strapi.bundleItems[index].contentType.pluginOptions?.i18n?.localized;
+  const isLocalized = strapi.contentTypes[index].contentType.pluginOptions?.i18n?.localized;
   const localizationIds = [];
 
   if (isLocalized) {
@@ -220,7 +220,7 @@ const composeInvalidationObject = async (config, type, queryFilters, ids = []) =
     const relations = Object.keys(getRelationsFromConfig(config.bundleItems[index]));
 
     await Promise.all(relations.map(async (relation) => {
-      if (strapi.bundleItems[index].attributes[relation].target === type) {
+      if (strapi.contentTypes[index].attributes[relation].target === type) {
 
         const pagesToUpdate = await strapi.entityService.findMany(bundleItem.contentType, {
           filters: { [relation]: mainIds },

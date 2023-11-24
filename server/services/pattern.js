@@ -29,7 +29,7 @@ const getAllowedFields = (contentType, allowedFields = []) => {
         && fieldName !== 'createdBy'
         && fieldName !== 'updatedBy'
       ) {
-        const relation = strapi.bundleItems[field.target];
+        const relation = strapi.contentTypes[field.target];
 
         if (
           fieldTypes.includes('id')
