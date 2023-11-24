@@ -110,7 +110,7 @@ export function generateSitemap(toggleNotification) {
 export function getBundleItems(toggleNotification) {
   return async function(dispatch) {
     try {
-      const bundleItems = await request('/sitemap/bundle-items/', { method: 'GET' });
+      const bundleItems = await request('/sitemap/content-types/', { method: 'GET' });
       dispatch(getBundleItemsSucceeded(bundleItems));
     } catch (err) {
       toggleNotification({ type: 'warning', message: { id: 'notification.error' } });
